@@ -1,0 +1,9 @@
+streamlit
+fastapi[all]
+langchain==0.2.5 
+langchain-google-genai
+langchain-community==0.2.5
+unstructured==0.14.6
+unstructured[pdf]
+faiss-cpu==1.8.0
+PyPDF2==3.0.1
