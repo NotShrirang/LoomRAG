@@ -20,13 +20,13 @@ if not os.path.exists("./vectorstore/faiss_index.index"):
 else:
     index, data = load_index()
 
-st.title("MultiModal RAG")
-tabs = st.tabs(["Add Image", "Search Image"])
+st.title("LoomRAG")
+tabs = st.tabs(["Upload Data", "Retrieve Data"])
 
 with tabs[0]:
-    upload_choice = st.selectbox("Upload Image", ["Upload Image", "Upload PDF"])
+    upload_choice = st.selectbox(options=["Upload Image", "Upload PDF"], label="Select Upload Type")
     if upload_choice == "Upload Image":
-        st.header("Add Image to Database")
+        st.subheader("Add Image to Database")
         image = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
         if image:
             st.image(image)
@@ -34,7 +34,7 @@ with tabs[0]:
                 add_image_to_index(image, index, model, preprocess)
                 st.success("Image Added to Database")
     else:
-        st.header("Add PDF to Database")
+        st.subheader("Add PDF to Database")
         pdf = st.file_uploader("Upload PDF", type=["pdf"])
         if pdf:
             if st.button("Add PDF"):
