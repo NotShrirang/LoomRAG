@@ -54,10 +54,9 @@ with tabs[1]:
             cols = st.columns(3)
             for i in range(3):
                 with cols[i]:
-                    st.write(indices)
                     image_path = data['path'].iloc[indices[0][i]]
                     if image_path.startswith("CONTENT:"):
-                        st.write(image_path)
+                        st.write(image_path.replace("CONTENT: ", ""))
                         continue
                     image = Image.open(image_path)
                     image = preprocess(image).unsqueeze(0).to(device)
@@ -65,5 +64,4 @@ with tabs[1]:
                     image_features = model.encode_image(image)
                     text_features = model.encode_text(text)
                     cosine_similarity = torch.cosine_similarity(image_features, text_features)
-                    st.write(f"Cosine Similarity: {cosine_similarity.item():.4f}")
                     st.image(image_path)
