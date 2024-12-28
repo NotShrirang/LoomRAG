@@ -8,13 +8,17 @@ import time
 import torch
 
 from utils import load_model, load_index
-from core.vectordb import add_image_to_index, search_index
+from core.vectordb import add_image_to_index, add_pdf_to_index, search_index
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = load_model()
-index, data = load_index()
+
+if not os.path.exists("./vectorstore/faiss_index.index"):
+    index = faiss.IndexFlatL2(512)
+else:
+    index, data = load_index()
 
 st.title("MultiModal RAG")
 tabs = st.tabs(["Add Image", "Search Image"])
@@ -30,7 +34,12 @@ with tabs[0]:
                 add_image_to_index(image, index, model, preprocess)
                 st.success("Image Added to Database")
     else:
-        st.info("Upload PDF is not supported yet")
+        st.header("Add PDF to Database")
+        pdf = st.file_uploader("Upload PDF", type=["pdf"])
+        if pdf:
+            if st.button("Add PDF"):
+                add_pdf_to_index(pdf, index, model, preprocess)
+                st.success("PDF Added to Database")
 
 with tabs[1]:
     text_input = st.text_input("Search Image Database")
@@ -45,7 +54,11 @@ with tabs[1]:
             cols = st.columns(3)
             for i in range(3):
                 with cols[i]:
+                    st.write(indices)
                     image_path = data['path'].iloc[indices[0][i]]
+                    if image_path.startswith("CONTENT:"):
+                        st.write(image_path)
+                        continue
                     image = Image.open(image_path)
                     image = preprocess(image).unsqueeze(0).to(device)
                     text = clip.tokenize([text_input]).to(device)
