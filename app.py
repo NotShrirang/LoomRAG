@@ -50,7 +50,7 @@ with tabs[1]:
             else:
                 data = pd.read_csv("./vectorstore/image_data.csv")
             indices = search_index(text_input, index, model, k=3)
-            st.subheader("Top 3 Images")
+            st.subheader("Top 3 Results")
             cols = st.columns(3)
             for i in range(3):
                 with cols[i]:
