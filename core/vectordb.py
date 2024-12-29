@@ -50,6 +50,8 @@ def add_image_to_index(image, index: faiss.IndexFlatL2, model: clip.model.CLIP, 
 
 
 def add_pdf_to_index(pdf, index, model, preprocess):
+    if not os.path.exists("./vectorstore/"):
+        os.makedirs("./vectorstore")
     pdf_name = pdf.name
     pdf_name = pdf_name.replace(" ", "_")
     pdf_reader = PdfReader(pdf)
@@ -82,10 +84,14 @@ def add_pdf_to_index(pdf, index, model, preprocess):
                 text = clip.tokenize([chunk]).to(device)
                 text_features = model.encode_text(text)
                 index.add(text_features.detach().numpy())
-                df = pd.read_csv("./vectorstore/image_data.csv").reset_index(drop=True)
-                new_entry_df = pd.DataFrame({"path": f"CONTENT: {chunk}", "index": len(df)}, index=[0])
-                df = pd.concat([df, new_entry_df], ignore_index=True)
-                df.to_csv("./vectorstore/image_data.csv", index=False)
+                if not os.path.exists("./vectorstore/image_data.csv"):
+                    df = pd.DataFrame([{"path": f"CONTENT: {chunk}", "index": 0}]).reset_index(drop=True)
+                    df.to_csv("./vectorstore/image_data.csv", index=False)
+                else:
+                    df = pd.read_csv("./vectorstore/image_data.csv").reset_index(drop=True)
+                    new_entry_df = pd.DataFrame({"path": f"CONTENT: {chunk}", "index": len(df)}, index=[0])
+                    df = pd.concat([df, new_entry_df], ignore_index=True)
+                    df.to_csv("./vectorstore/image_data.csv", index=False)
                 pdf_pages_data.append({f"page_number": page_num, "content": chunk, "type": "text"})
 
             if not os.path.exists("./vectorstore/faiss_index.index"):
@@ -93,7 +99,7 @@ def add_pdf_to_index(pdf, index, model, preprocess):
             else:
                 os.remove("./vectorstore/faiss_index.index")
                 faiss.write_index(index, './vectorstore/faiss_index.index')
-        percent_complete = ((page_num) / len(pdf_reader.pages))
+        percent_complete = ((page_num + 1) / len(pdf_reader.pages))
         progress_bar.progress(percent_complete, f"Processing Page {page_num + 1}/{len(pdf_reader.pages)}")
     return pdf_pages_data
 

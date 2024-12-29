@@ -13,6 +13,7 @@
 This project implements a Multimodal Retrieval-Augmented Generation (RAG) system, named **LoomRAG**, that leverages OpenAI's CLIP model for neural cross-modal retrieval and semantic search. The system allows users to input text queries and retrieve both text and image responses seamlessly through vector embeddings. It also supports uploading images and PDFs for enhanced interaction and intelligent retrieval capabilities through a Streamlit-based interface.
 
 ---
+
 ## ✨ Features
 - 🔄 **Cross-Modal Retrieval**: Search text to retrieve both text and image results using deep learning
 - 🌐 **Streamlit Interface**: Provides a user-friendly web interface for interacting with the system
@@ -21,6 +22,7 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 - 🔍 **Augmented Text Generation**: Enhances text results using LLMs for contextually rich outputs
 
 ---
+
 ## 🏗️ Architecture Overview
 1. **Data Indexing**:
    - Text, images, and PDFs are preprocessed and embedded using the CLIP model
@@ -37,6 +39,7 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
    - For PDFs: Extracts text content and provides relevant sections
 
 ---
+
 ## 🚀 Installation
 1. Clone the repository:
    ```bash
@@ -50,6 +53,7 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
    ```
 
 ---
+
 ## 📖 Usage
 1. **Running the Streamlit Interface**:
    - Start the Streamlit app:
@@ -68,12 +72,14 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
      Output: Extracted key sections or contextually relevant images
 
 ---
+
 ## ⚙️ Configuration
 - 📊 **Vector Database**: It uses FAISS for efficient similarity search
 - 🤖 **Model**: Uses OpenAI CLIP for neural embedding generation
 - ✍️ **Augmentation**: Optional LLM-based augmentation for text responses
 
 ---
+
 ## 🗺️ Roadmap
 - [ ] Fine-tuning CLIP for domain-specific datasets
 - [ ] Adding support for audio and video modalities
@@ -81,15 +87,20 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 - [ ] Enhanced PDF parsing with semantic section segmentation
 
 ---
+
 ## 🤝 Contributing
+
 Contributions are welcome! Please open an issue or submit a pull request for any feature requests or bug fixes.
 
 ---
+
 ## 📄 License
+
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 ## 🙏 Acknowledgments
+
 - [OpenAI CLIP](https://openai.com/research/clip)
 - [FAISS](https://github.com/facebookresearch/faiss)
 - [Hugging Face](https://huggingface.co/)
