@@ -15,7 +15,6 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 ---
 
 ## ✨ Features
-
 - 🔄 **Cross-Modal Retrieval**: Search text to retrieve both text and image results using deep learning
 - 🌐 **Streamlit Interface**: Provides a user-friendly web interface for interacting with the system
 - 📤 **Upload Options**: Allows users to upload images and PDFs for AI-powered processing and retrieval
@@ -25,14 +24,11 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 ---
 
 ## 🏗️ Architecture Overview
-
 1. **Data Indexing**:
-
    - Text, images, and PDFs are preprocessed and embedded using the CLIP model
    - Embeddings are stored in a vector database for fast and efficient retrieval
 
 2. **Query Processing**:
-
    - Text queries are converted into embeddings for semantic search
    - Uploaded images and PDFs are processed and embedded for comparison
    - The system performs a nearest neighbor search in the vector database to retrieve relevant text and images
@@ -45,9 +41,7 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 ---
 
 ## 🚀 Installation
-
 1. Clone the repository:
-
    ```bash
    git clone https://github.com/NotShrirang/LoomRAG.git
    cd LoomRAG
@@ -61,15 +55,12 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 ---
 
 ## 📖 Usage
-
 1. **Running the Streamlit Interface**:
-
    - Start the Streamlit app:
 
      ```bash
      streamlit run app.py
      ```
-
    - Access the interface in your browser to:
      - Submit natural language queries
      - Upload images or PDFs to retrieve contextually relevant results
@@ -83,7 +74,6 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 ---
 
 ## ⚙️ Configuration
-
 - 📊 **Vector Database**: It uses FAISS for efficient similarity search
 - 🤖 **Model**: Uses OpenAI CLIP for neural embedding generation
 - ✍️ **Augmentation**: Optional LLM-based augmentation for text responses
@@ -91,7 +81,6 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 ---
 
 ## 🗺️ Roadmap
-
 - [ ] Fine-tuning CLIP for domain-specific datasets
 - [ ] Adding support for audio and video modalities
 - [ ] Improving the re-ranking system for better contextual relevance
@@ -110,7 +99,6 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
-
 ## 🙏 Acknowledgments
 
 - [OpenAI CLIP](https://openai.com/research/clip)
