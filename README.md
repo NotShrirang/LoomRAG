@@ -13,6 +13,13 @@
 This project implements a Multimodal Retrieval-Augmented Generation (RAG) system, named **LoomRAG**, that leverages OpenAI's CLIP model for neural cross-modal retrieval and semantic search. The system allows users to input text queries and retrieve both text and image responses seamlessly through vector embeddings. It also supports uploading images and PDFs for enhanced interaction and intelligent retrieval capabilities through a Streamlit-based interface.
 
 ---
+## 📸 Implementation Screenshots
+
+| ![Screenshot 2024-12-30 111906](https://github.com/user-attachments/assets/13c0bd0d-1569-4d9e-aae5-ea5801a69beb) | ![Screenshot 2024-12-30 114200](https://github.com/user-attachments/assets/d74e9d75-7716-4705-9564-0c6fdc26790b) |
+|---------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| Screenshot 1                                                                                                  | Screenshot 2                                                                                                  |
+
+---
 
 ## ✨ Features
 - 🔄 **Cross-Modal Retrieval**: Search text to retrieve both text and image results using deep learning
