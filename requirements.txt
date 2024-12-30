@@ -11,7 +11,7 @@ cachetools==5.5.0
 certifi==2024.12.14
 charset-normalizer==3.4.1
 click==8.1.8
-clip==1.0
+clip @ git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1
 colorama==0.4.6
 exceptiongroup==1.2.2
 faiss-cpu==1.8.0
