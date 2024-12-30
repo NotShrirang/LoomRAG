@@ -7,6 +7,7 @@ import os
 import pandas as pd
 from PyPDF2 import PdfReader
 from PIL import Image
+from sentence_transformers import SentenceTransformer
 import streamlit as st
 import torch
 import time
@@ -15,8 +16,47 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 os.makedirs("./vectorstore", exist_ok=True)
 
+def update_vectordb(index_path: str, embedding: torch.Tensor, image_path: str = None, text_content: str = None):
+    if not image_path and not text_content:
+        raise ValueError("Either image_path or text_content must be provided.")
+    if not os.path.exists(f"./vectorstore/{index_path}"):
+        if image_path:
+            index = faiss.IndexFlatL2(512)
+        else:
+            index = faiss.IndexFlatL2(384)
+    else:
+        index = faiss.read_index(f"./vectorstore/{index_path}")
+    try:
+        index.add(embedding.cpu().numpy())
+    except:
+        if len(embedding.shape) == 1:
+            embedding = torch.Tensor([embedding])
+        index.add(embedding)
+    faiss.write_index(index, f'./vectorstore/{index_path}')
+    if image_path:
+        if not os.path.exists("./vectorstore/image_data.csv"):
+            df = pd.DataFrame([{"path": image_path, "index": 0}]).reset_index(drop=True)
+            df.to_csv("./vectorstore/image_data.csv", index=False)
+        else:
+            df = pd.read_csv("./vectorstore/image_data.csv").reset_index(drop=True)
+            new_entry_df = pd.DataFrame({"path": image_path, "index": len(df)}, index=[0])
+            df = pd.concat([df, new_entry_df], ignore_index=True)
+            df.to_csv("./vectorstore/image_data.csv", index=False)
+    elif text_content:
+        if not os.path.exists("./vectorstore/text_data.csv"):
+            df = pd.DataFrame([{"content": text_content, "index": 0}]).reset_index(drop=True)
+            df.to_csv("./vectorstore/text_data.csv", index=False)
+        else:
+            df = pd.read_csv("./vectorstore/text_data.csv").reset_index(drop=True)
+            new_entry_df = pd.DataFrame({"content": text_content, "index": len(df)}, index=[0])
+            df = pd.concat([df, new_entry_df], ignore_index=True)
+            df.to_csv("./vectorstore/text_data.csv", index=False)
+    else:
+        raise ValueError("Either image_path or text_content must be provided.")
+    return index
 
-def add_image_to_index(image, index: faiss.IndexFlatL2, model: clip.model.CLIP, preprocess):
+
+def add_image_to_index(image, model: clip.model.CLIP, preprocess):
     image_name = image.name
     image_name = image_name.replace(" ", "_")
     os.makedirs("./images", exist_ok=True)
@@ -31,25 +71,11 @@ def add_image_to_index(image, index: faiss.IndexFlatL2, model: clip.model.CLIP, 
     with torch.no_grad():
         image = preprocess(image).unsqueeze(0).to(device)
         image_features = model.encode_image(image)
-        index.add(image_features.cpu().numpy())
-        if not os.path.exists("./vectorstore/image_data.csv"):
-            df = pd.DataFrame([{"path": f"./images/{image_name}", "index": 0}]).reset_index(drop=True)
-            df.to_csv("./vectorstore/image_data.csv", index=False)
-        else:
-            df = pd.read_csv("./vectorstore/image_data.csv").reset_index(drop=True)
-            new_entry_df = pd.DataFrame({"path": f"./images/{image_name}", "index": len(df)}, index=[0])
-            df = pd.concat([df, new_entry_df], ignore_index=True)
-            df.to_csv("./vectorstore/image_data.csv", index=False)
-
-        if not os.path.exists("./vectorstore/faiss_index.index"):
-            faiss.write_index(index, './vectorstore/faiss_index.index')
-        else:
-            os.remove("./vectorstore/faiss_index.index")
-            faiss.write_index(index, './vectorstore/faiss_index.index')
+        index = update_vectordb(index_path="image_index.index", embedding=image_features, image_path=f"./images/{image_name}")
         return index
 
 
-def add_pdf_to_index(pdf, index, model, preprocess):
+def add_pdf_to_index(pdf, clip_model: clip.model.CLIP, preprocess, text_embedding_model: SentenceTransformer):
     if not os.path.exists("./vectorstore/"):
         os.makedirs("./vectorstore")
     pdf_name = pdf.name
@@ -59,8 +85,8 @@ def add_pdf_to_index(pdf, index, model, preprocess):
     pdf_texts = []
     text_splitter = CharacterTextSplitter(
         separator="\n",
-        chunk_size=150,
-        chunk_overlap=30,
+        chunk_size=1000,
+        chunk_overlap=200,
         length_function=len,
         is_separator_regex=False,
     )
@@ -73,41 +99,30 @@ def add_pdf_to_index(pdf, index, model, preprocess):
             st.error("Some images in the PDF are not readable. Please try another PDF.")
         for image in page_images:
             image.name = f"{time.time()}.png"
-            add_image_to_index(image, index, model, preprocess)
+            add_image_to_index(image, clip_model, preprocess)
             pdf_pages_data.append({f"page_number": page_num, "content": image, "type": "image"})
 
         page_text = page.extract_text()
         pdf_texts.append(page_text)
         if page_text != "" or page_text.strip() != "":
             chunks = text_splitter.split_text(page_text)
-            for chunk in chunks:
-                text = clip.tokenize([chunk]).to(device)
-                text_features = model.encode_text(text)
-                index.add(text_features.detach().numpy())
-                if not os.path.exists("./vectorstore/image_data.csv"):
-                    df = pd.DataFrame([{"path": f"CONTENT: {chunk}", "index": 0}]).reset_index(drop=True)
-                    df.to_csv("./vectorstore/image_data.csv", index=False)
-                else:
-                    df = pd.read_csv("./vectorstore/image_data.csv").reset_index(drop=True)
-                    new_entry_df = pd.DataFrame({"path": f"CONTENT: {chunk}", "index": len(df)}, index=[0])
-                    df = pd.concat([df, new_entry_df], ignore_index=True)
-                    df.to_csv("./vectorstore/image_data.csv", index=False)
+            text_embeddings: torch.Tensor = text_embedding_model.encode(chunks)
+            for i, chunk in enumerate(chunks):
+                update_vectordb(index_path="text_index.index", embedding=text_embeddings[i], text_content=chunk)
                 pdf_pages_data.append({f"page_number": page_num, "content": chunk, "type": "text"})
-
-            if not os.path.exists("./vectorstore/faiss_index.index"):
-                faiss.write_index(index, './vectorstore/faiss_index.index')
-            else:
-                os.remove("./vectorstore/faiss_index.index")
-                faiss.write_index(index, './vectorstore/faiss_index.index')
         percent_complete = ((page_num + 1) / len(pdf_reader.pages))
         progress_bar.progress(percent_complete, f"Processing Page {page_num + 1}/{len(pdf_reader.pages)}")
     return pdf_pages_data
 
 
-
-def search_index(text_input, index, model, k=3):
+def search_image_index(text_input: str, index: faiss.IndexFlatL2, clip_model: clip.model.CLIP, k: int = 3):
     with torch.no_grad():
         text = clip.tokenize([text_input]).to(device)
-        text_features = model.encode_text(text)
+        text_features = clip_model.encode_text(text)
         distances, indices = index.search(text_features.cpu().numpy(), k)
         return indices
+
+def search_text_index(text_input: str, index: faiss.IndexFlatL2, text_embedding_model: SentenceTransformer, k: int = 3):
+    text_embeddings = text_embedding_model.encode([text_input])
+    distances, indices = index.search(text_embeddings, k)
+    return indices
