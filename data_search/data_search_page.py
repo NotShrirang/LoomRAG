@@ -21,6 +21,11 @@ def data_search(clip_model, preprocess, text_embedding_model, device):
 
     st.title("Data Search")
 
+    images = os.listdir("images/")
+    if images == []:
+        st.warning("No Images Found! Please upload images to the database.")
+        return
+
     annotation_projects = get_local_files("annotations/", get_details=True)
 
     if annotation_projects or st.session_state.get('selected_annotation_project', None) is not None:

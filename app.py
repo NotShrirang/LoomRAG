@@ -21,8 +21,8 @@ st.set_page_config(layout="wide", page_title="LoomRAG", page_icon="🔍")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 clip_model, preprocess = load_clip_model()
 text_embedding_model = load_text_embedding_model()
-
-sidebar = st.sidebar
+os.makedirs("annotations/", exist_ok=True)
+os.makedirs("images/", exist_ok=True)
 
 with st.sidebar:
     st.title("LoomRAG")
