@@ -1,6 +1,8 @@
 import clip
+from datetime import datetime
 import faiss
 import pandas as pd
+import os
 from sentence_transformers import SentenceTransformer
 import streamlit as st
 import torch
@@ -29,3 +31,30 @@ def load_text_index():
 
 def cosine_similarity(a, b):
     return torch.cosine_similarity(a, b)
+
+
+def get_local_files(directory: str, extensions: list = None, get_details: bool = False):
+    files = os.listdir(directory)
+    if not extensions:
+        if get_details:
+            return [{
+                "file_name": file,
+                "file_size": os.path.getsize(os.path.join(directory, file)),
+                "file_created": datetime.fromtimestamp(os.path.getctime(os.path.join(directory, file)))
+            } for file in files]
+        else:
+            return files
+    else:
+        if get_details:
+            filtered_files = []
+            for file in files:
+                file_extension = file.split(".")[-1]
+                if file_extension in extensions:
+                    filtered_files.append({
+                        "file_name": file,
+                        "file_size": os.path.getsize(os.path.join(directory, file)),
+                        "file_created": datetime.fromtimestamp(os.path.getctime(os.path.join(directory, file)))
+                    })
+            return filtered_files
+        else:
+            return [file for file in files if file.endswith(extensions(extensions))]
