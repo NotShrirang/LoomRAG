@@ -17,6 +17,9 @@ clip_model, preprocess = load_clip_model()
 text_embedding_model = load_text_embedding_model()
 
 st.title("LoomRAG")
+st.warning("This is a demo version of LoomRAG.")
+st.warning("The Streamlit Cloud Hosting service does not support some file operations. So, the full functionality of the app is not available here. Please check the GitHub repository for the full version of the app.")
+
 tabs = st.tabs(["Upload Data", "Retrieve Data"])
 
 with tabs[0]:
