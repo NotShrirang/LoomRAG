@@ -14,7 +14,7 @@ This project implements a Multimodal Retrieval-Augmented Generation (RAG) system
 
 Experience the project in action:
 
-[![LoomRAG Streamlit App](https://img.shields.io/badge/Streamlit%20App-red?style=for-the-badge&logo=streamlit&labelColor=white)](https://loomrag.streamlit.app/)
+[![LoomRAG Streamlit App](https://img.shields.io/badge/Streamlit%20App-red?style=for-the-badge&logo=streamlit&labelColor=white)](https://huggingface.co/spaces/NotShrirang/LoomRAG)
 
 ---
 
