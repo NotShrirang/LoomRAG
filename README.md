@@ -8,7 +8,7 @@
 ![GitHub](https://img.shields.io/github/license/NotShrirang/LoomRAG)
 ![GitHub last commit](https://img.shields.io/github/last-commit/NotShrirang/LoomRAG)
 ![GitHub repo size](https://img.shields.io/github/repo-size/NotShrirang/LoomRAG)
-<a href="https://loomrag.streamlit.app/"><img src="https://img.shields.io/badge/Streamlit%20App-red?style=flat-rounded-square&logo=streamlit&labelColor=white"/></a>
+<a href="https://huggingface.co/spaces/NotShrirang/LoomRAG"><img src="https://img.shields.io/badge/Streamlit%20App-red?style=flat-rounded-square&logo=streamlit&labelColor=white"/></a>
 
 This project implements a Multimodal Retrieval-Augmented Generation (RAG) system, named **LoomRAG**, that leverages OpenAI's CLIP model for neural cross-modal retrieval and semantic search. The system allows users to input text queries and retrieve both text and image responses seamlessly through vector embeddings. It also supports uploading images and PDFs for enhanced interaction and intelligent retrieval capabilities through a Streamlit-based interface.
 
