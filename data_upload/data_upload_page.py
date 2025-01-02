@@ -18,7 +18,8 @@ def data_upload(clip_model, preprocess, text_embedding_model):
                 with cols[count]:
                     st.image(image)
             with cols[4]:
-                st.info(f"and more {len(images) - 5} images...")
+                if len(images) > 5:
+                    st.info(f"and more {len(images) - 5} images...")
             st.info(f"Total {len(images)} files selected.")
             if st.button("Add Images"):
                 progress_bar = st.progress(0)

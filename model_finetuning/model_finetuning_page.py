@@ -21,7 +21,7 @@ def model_finetuning():
 
     pages = {
         0: "Preference Selection",
-        1: "Model Training",
+        1: "Model Fine-Tuning",
         2: "Model Evaluation"
     }
     st.title(pages[page])
