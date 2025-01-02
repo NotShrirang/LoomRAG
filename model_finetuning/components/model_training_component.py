@@ -18,7 +18,7 @@ import os
 
 def model_training():
     dataset_path = st.session_state.get("selected_dataset", None)
-    if not dataset_path:
+    if not dataset_path or dataset_path == "":
         st.error("Please select a dataset to proceed.")
         return
     
@@ -34,8 +34,15 @@ def model_training():
     st.subheader("Data Preview")
     st.dataframe(annotations_df.head(), use_container_width=True)
 
+    if len(annotations_df) < 2:
+        st.error("Not enough data to train the model.")
+        return
+
     test_size = st.selectbox("Select Test Size", options=[0.1, 0.2, 0.3, 0.4, 0.5], index=1)
     train_df, val_df = train_test_split(annotations_df, test_size=test_size, random_state=42)
+    if len(train_df) < 2:
+        st.error("Not enough data to train the model.")
+        return
     st.write(f"Train Size: {len(train_df)} | Validation Size: {len(val_df)}")
     col1, col2 = st.columns(2)
     with col1:
@@ -50,6 +57,8 @@ def model_training():
             for batch_size in batch_size_options:
                 if batch_size > ideal_batch_size:
                     ideal_batch_size_index = batch_size_options.index(batch_size) - 1
+                    if ideal_batch_size_index < 0:
+                        ideal_batch_size_index = 0
                     break
         batch_size = st.selectbox("Select Batch Size", options=[2, 4, 8, 16, 32, 64, 128], index=ideal_batch_size_index)
     
