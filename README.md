@@ -32,13 +32,16 @@ Experience the project in action:
 ## ✨ Features
 
 - 🔄 **Cross-Modal Retrieval**: Search text to retrieve both text and image results using deep learning
-- 🌐 **Streamlit Interface**: Provides a user-friendly web interface for interacting with the system
-- 📤 **Upload Options**: Allows users to upload images and PDFs for AI-powered processing and retrieval
+- 🖼️ **Image-Based Search**: Search the database by uploading an image to find similar content
 - 🧠 **Embedding-Based Search**: Uses OpenAI's CLIP model to align text and image embeddings in a shared latent space
-- 🔍 **Augmented Text Generation**: Enhances text results using LLMs for contextually rich outputs
-- 🏷️ **Image Annotation**: Enables users to annotate uploaded images through an intuitive interface
 - 🎯 **CLIP Fine-Tuning**: Supports custom model training with configurable parameters including test dataset split size, learning rate, optimizer, and weight decay
 - 🔨 **Fine-Tuned Model Integration**: Seamlessly load and utilize fine-tuned CLIP models for enhanced search and retrieval
+- 📤 **Upload Options**: Allows users to upload images and PDFs for AI-powered processing and retrieval
+- 🔗 **URL Integration**: Add images directly using URLs and scrape website data including text and images
+- 🕷️ **Web Scraping**: Automatically extract and index content from websites for comprehensive search capabilities
+- 🏷️ **Image Annotation**: Enables users to annotate uploaded images through an intuitive interface
+- 🔍 **Augmented Text Generation**: Enhances text results using LLMs for contextually rich outputs
+- 🌐 **Streamlit Interface**: Provides a user-friendly web interface for interacting with the system
 
 ---
 
@@ -48,10 +51,11 @@ Experience the project in action:
 
    - Text, images, and PDFs are preprocessed and embedded using the CLIP model
    - Embeddings are stored in a vector database for fast and efficient retrieval
+   - Support for direct URL-based image indexing and website content scraping
 
 2. **Query Processing**:
 
-   - Text queries are converted into embeddings for semantic search
+   - Text queries / image-based queries are converted into embeddings for semantic search
    - Uploaded images and PDFs are processed and embedded for comparison
    - The system performs a nearest neighbor search in the vector database to retrieve relevant text and images
 
@@ -104,6 +108,9 @@ Experience the project in action:
    - Access the interface in your browser to:
      - Submit natural language queries
      - Upload images or PDFs to retrieve contextually relevant results
+     - Add images using URLs
+     - Scrape and index website content
+     - Search using uploaded images
      - Annotate uploaded images
      - Fine-tune CLIP models with custom parameters
      - Use fine-tuned models for improved search results
@@ -128,6 +135,7 @@ Experience the project in action:
 ## 🗺️ Roadmap
 
 - [x] Fine-tuning CLIP for domain-specific datasets
+- [x] Image-based search and retrieval
 - [ ] Adding support for audio and video modalities
 - [ ] Improving the re-ranking system for better contextual relevance
 - [ ] Enhanced PDF parsing with semantic section segmentation
