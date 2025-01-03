@@ -5,8 +5,9 @@ from PIL import Image
 import streamlit as st
 import sys
 import torch
-from vectordb import search_image_index, search_text_index
+from vectordb import search_image_index, search_text_index, search_image_index_with_image, search_text_index_with_image
 from utils import load_image_index, load_text_index, get_local_files
+from data_search import adapter_utils
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -18,6 +19,11 @@ def data_search(clip_model, preprocess, text_embedding_model, device):
         model, preprocess = clip.load("ViT-B/32", device=device)
         model.load_state_dict(torch.load(f"annotations/{file_name}/finetuned_model.pt", weights_only=True))
         return model, preprocess
+    
+    @st.cache_resource
+    def load_adapter():
+        adapter = adapter_utils.load_adapter_model()
+        return adapter
 
     st.title("Data Search")
 
@@ -51,8 +57,13 @@ def data_search(clip_model, preprocess, text_embedding_model, device):
             else:
                 st.info("Using Default Model")
 
+    adapter = load_adapter()
+    adapter.to(device)
+
     text_input = st.text_input("Search Database")
-    if st.button("Search", disabled=text_input.strip() == ""):
+    image_input = st.file_uploader("Upload Image", type=["png", "jpg", "jpeg"])
+
+    if st.button("Search", disabled=text_input.strip() == "" and image_input is None):
         if os.path.exists("./vectorstore/image_index.index"):
             image_index, image_data = load_image_index()
         if os.path.exists("./vectorstore/text_index.index"):
@@ -64,10 +75,21 @@ def data_search(clip_model, preprocess, text_embedding_model, device):
             if not os.path.exists("./vectorstore/text_data.csv"):
                 st.warning("No Text Index Found. So not searching for text.")
                 text_index = None
-            if image_index is not None:
-                image_indices = search_image_index(text_input, image_index, clip_model, k=3)
-            if text_index is not None:
-                text_indices = search_text_index(text_input, text_index, text_embedding_model, k=3)
+            if image_input:
+                image = Image.open(image_input)
+                image = preprocess(image).unsqueeze(0).to(device)
+                with torch.no_grad():
+                    image_features = clip_model.encode_image(image)
+                    adapted_text_embeddings = adapter(image_features)
+                    if image_index is not None:
+                        image_indices = search_image_index_with_image(image_features, image_index, clip_model, k=3)
+                    if text_index is not None:
+                        text_indices = search_text_index_with_image(adapted_text_embeddings, text_index, text_embedding_model, k=3)
+            else:
+                if image_index is not None:
+                    image_indices = search_image_index(text_input, image_index, clip_model, k=3)
+                if text_index is not None:
+                    text_indices = search_text_index(text_input, text_index, text_embedding_model, k=3)
             if not image_index and not text_index:
                 st.error("No Data Found! Please add data to the database.")
             st.subheader("Top 3 Results")
