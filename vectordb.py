@@ -57,7 +57,10 @@ def update_vectordb(index_path: str, embedding: torch.Tensor, image_path: str = 
 
 
 def add_image_to_index(image, model: clip.model.CLIP, preprocess):
-    image_name = image.name
+    if hasattr(image, "name"):
+        image_name = image.name
+    else:
+        image_name = f"{time.time()}.png"
     image_name = image_name.replace(" ", "_")
     os.makedirs("./images", exist_ok=True)
     os.makedirs("./vectorstore", exist_ok=True)
@@ -65,7 +68,10 @@ def add_image_to_index(image, model: clip.model.CLIP, preprocess):
         try:
             f.write(image.read())
         except:
-            image = io.BytesIO(image.data)
+            if hasattr(image, "data"):
+                image = io.BytesIO(image.data)
+            else:
+                image = io.BytesIO(image)
             f.write(image.read())
     image = Image.open(f"./images/{image_name}")
     with torch.no_grad():
@@ -106,13 +112,23 @@ def add_pdf_to_index(pdf, clip_model: clip.model.CLIP, preprocess, text_embeddin
         pdf_texts.append(page_text)
         if page_text != "" or page_text.strip() != "":
             chunks = text_splitter.split_text(page_text)
-            text_embeddings: torch.Tensor = text_embedding_model.encode(chunks)
+            text_embeddings = text_embedding_model.encode(chunks)
             for i, chunk in enumerate(chunks):
                 update_vectordb(index_path="text_index.index", embedding=text_embeddings[i], text_content=chunk)
                 pdf_pages_data.append({f"page_number": page_num, "content": chunk, "type": "text"})
         percent_complete = ((page_num + 1) / len(pdf_reader.pages))
         progress_bar.progress(percent_complete, f"Processing Page {page_num + 1}/{len(pdf_reader.pages)}")
     return pdf_pages_data
+
+def search_image_index_with_image(image_features, index: faiss.IndexFlatL2, clip_model: clip.model.CLIP, k: int = 3):
+    with torch.no_grad():
+        distances, indices = index.search(image_features.cpu().numpy(), k)
+        return indices
+
+
+def search_text_index_with_image(text_embeddings, index: faiss.IndexFlatL2, text_embedding_model: SentenceTransformer, k: int = 3):
+    distances, indices = index.search(text_embeddings, k)
+    return indices
 
 
 def search_image_index(text_input: str, index: faiss.IndexFlatL2, clip_model: clip.model.CLIP, k: int = 3):
