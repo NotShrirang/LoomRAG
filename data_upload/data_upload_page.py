@@ -9,6 +9,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 def data_upload(clip_model, preprocess, text_embedding_model):
     st.title("Data Upload")
+    st.warning("Please note that this is a public application. Make sure you are not uploading any sensitive data.")
     upload_choice = st.selectbox(options=["Upload Image", "Add Image from URL / Link", "Upload PDF", "Website Link"], label="Select Upload Type")
     if upload_choice == "Upload Image":
         image_util.upload_image(clip_model, preprocess)
