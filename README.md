@@ -22,11 +22,10 @@ Experience the project in action:
 
 | ![Screenshot 2025-01-01 184852](https://github.com/user-attachments/assets/ad79d0f0-d200-4a82-8c2f-0890a9fe8189) | ![Screenshot 2025-01-01 222334](https://github.com/user-attachments/assets/7307857d-a41f-4f60-8808-00d6db6e8e3e) |
 | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Data Upload Page | Data Search / Retrieval |
-|  |  |
-| ![Screenshot 2025-01-01 222412](https://github.com/user-attachments/assets/e38273f4-426b-444d-80f0-501fa9563779) | ![Screenshot 2025-01-01 223948](https://github.com/user-attachments/assets/21724a92-ef79-44ae-83e6-25f8de29c45a)
-| Data Annotation Page | CLIP Fine-Tuning |
-
+| Data Upload Page                                                                                                 | Data Search / Retrieval                                                                                          |
+|                                                                                                                  |                                                                                                                  |
+| ![Screenshot 2025-01-01 222412](https://github.com/user-attachments/assets/e38273f4-426b-444d-80f0-501fa9563779) | ![Screenshot 2025-01-01 223948](https://github.com/user-attachments/assets/21724a92-ef79-44ae-83e6-25f8de29c45a) |
+| Data Annotation Page                                                                                             | CLIP Fine-Tuning                                                                                                 |
 
 ---
 
@@ -37,9 +36,9 @@ Experience the project in action:
 - 📤 **Upload Options**: Allows users to upload images and PDFs for AI-powered processing and retrieval
 - 🧠 **Embedding-Based Search**: Uses OpenAI's CLIP model to align text and image embeddings in a shared latent space
 - 🔍 **Augmented Text Generation**: Enhances text results using LLMs for contextually rich outputs
-- 🏷️ Image Annotation: Enables users to annotate uploaded images through an intuitive interface
-- 🎯 CLIP Fine-Tuning: Supports custom model training with configurable parameters including test dataset split size, learning rate, optimizer, and weight decay
-- 🔨 Fine-Tuned Model Integration: Seamlessly load and utilize fine-tuned CLIP models for enhanced search and retrieval
+- 🏷️ **Image Annotation**: Enables users to annotate uploaded images through an intuitive interface
+- 🎯 **CLIP Fine-Tuning**: Supports custom model training with configurable parameters including test dataset split size, learning rate, optimizer, and weight decay
+- 🔨 **Fine-Tuned Model Integration**: Seamlessly load and utilize fine-tuned CLIP models for enhanced search and retrieval
 
 ---
 
@@ -57,11 +56,13 @@ Experience the project in action:
    - The system performs a nearest neighbor search in the vector database to retrieve relevant text and images
 
 3. **Response Generation**:
+
    - For text results: Optionally refined or augmented using a language model
    - For image results: Directly returned or enhanced with image captions
    - For PDFs: Extracts text content and provides relevant sections
 
 4. **Image Annotation**:
+
    - Dedicated annotation page for managing uploaded images
    - Support for creating and managing multiple datasets simultaneously
    - Flexible annotation workflow for efficient data labeling
