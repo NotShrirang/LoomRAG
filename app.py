@@ -12,7 +12,7 @@ from data_upload import data_upload_page
 from data_search import data_search_page
 from data_annotations import data_annotation_page
 from model_finetuning import model_finetuning_page
-from utils import load_clip_model, load_text_embedding_model
+from utils import load_clip_model, load_text_embedding_model, load_whisper_model
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -21,6 +21,7 @@ st.set_page_config(layout="wide", page_title="LoomRAG", page_icon="🔍")
 device = "cuda" if torch.cuda.is_available() else "cpu"
 clip_model, preprocess = load_clip_model()
 text_embedding_model = load_text_embedding_model()
+whisper_model = load_whisper_model()
 os.makedirs("annotations/", exist_ok=True)
 os.makedirs("images/", exist_ok=True)
 
@@ -34,9 +35,9 @@ with st.sidebar:
     )
 
 if page == "Data Upload":
-    data_upload_page.data_upload(clip_model, preprocess, text_embedding_model)
+    data_upload_page.data_upload(clip_model, preprocess, text_embedding_model, whisper_model)
 if page == "Data Search":
-    data_search_page.data_search(clip_model, preprocess, text_embedding_model, device)
+    data_search_page.data_search(clip_model, preprocess, text_embedding_model, whisper_model, device)
 if page == "Data Annotation":
     data_annotation_page.data_annotations()
 if page == "Model Fine-Tuning":

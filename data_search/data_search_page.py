@@ -6,13 +6,13 @@ import streamlit as st
 import sys
 import torch
 from vectordb import search_image_index, search_text_index, search_image_index_with_image, search_text_index_with_image
-from utils import load_image_index, load_text_index, get_local_files
+from utils import load_image_index, load_text_index, load_audio_index, get_local_files
 from data_search import adapter_utils
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 
-def data_search(clip_model, preprocess, text_embedding_model, device):
+def data_search(clip_model, preprocess, text_embedding_model, whisper_model, device):
 
     @st.cache_resource
     def load_finetuned_model(file_name):
@@ -68,6 +68,8 @@ def data_search(clip_model, preprocess, text_embedding_model, device):
             image_index, image_data = load_image_index()
         if os.path.exists("./vectorstore/text_index.index"):
             text_index, text_data = load_text_index()
+        if os.path.exists("./vectorstore/audio_index.index"):
+            audio_index, audio_data = load_audio_index()
         with torch.no_grad():
             if not os.path.exists("./vectorstore/image_data.csv"):
                 st.warning("No Image Index Found. So not searching for images.")
@@ -75,6 +77,8 @@ def data_search(clip_model, preprocess, text_embedding_model, device):
             if not os.path.exists("./vectorstore/text_data.csv"):
                 st.warning("No Text Index Found. So not searching for text.")
                 text_index = None
+            if not os.path.exists("./vectorstore/audio_data.csv"):
+                st.warning("No Audio Index Found. So not searching for audio.")
             if image_input:
                 image = Image.open(image_input)
                 image = preprocess(image).unsqueeze(0).to(device)
@@ -85,14 +89,18 @@ def data_search(clip_model, preprocess, text_embedding_model, device):
                         image_indices = search_image_index_with_image(image_features, image_index, clip_model, k=3)
                     if text_index is not None:
                         text_indices = search_text_index_with_image(adapted_text_embeddings, text_index, text_embedding_model, k=3)
+                    if audio_index is not None:
+                        audio_indices = search_text_index_with_image(adapted_text_embeddings, audio_index, text_embedding_model, k=3)
             else:
                 if image_index is not None:
                     image_indices = search_image_index(text_input, image_index, clip_model, k=3)
                 if text_index is not None:
                     text_indices = search_text_index(text_input, text_index, text_embedding_model, k=3)
-            if not image_index and not text_index:
+                if audio_index is not None:
+                    audio_indices = search_text_index(text_input, audio_index, text_embedding_model, k=3)
+            if not image_index and not text_index and not audio_index:
                 st.error("No Data Found! Please add data to the database.")
-            st.subheader("Top 3 Results")
+            st.subheader("Image Results")
             cols = st.columns(3)
             for i in range(3):
                 with cols[i]:
@@ -106,9 +114,19 @@ def data_search(clip_model, preprocess, text_embedding_model, device):
                         cosine_similarity = torch.cosine_similarity(image_features, text_features)
                         st.write(f"Similarity: {cosine_similarity.item() * 100:.2f}%")
                         st.image(image_path)
+            st.subheader("Text Results")
             cols = st.columns(3)
             for i in range(3):
                 with cols[i]:
                     if text_index:
                         text_content = text_data['content'].iloc[text_indices[0][i]]
                         st.write(text_content)
+            st.subheader("Audio Results")
+            cols = st.columns(3)
+            for i in range(3):
+                with cols[i]:
+                    if audio_index:
+                        audio_path = audio_data['path'].iloc[audio_indices[0][i]]
+                        audio_content = audio_data['content'].iloc[audio_indices[0][i]]
+                        st.audio(audio_path)
+                        st.write(f"_{audio_content}_")
