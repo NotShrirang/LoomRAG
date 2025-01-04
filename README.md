@@ -10,7 +10,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/NotShrirang/LoomRAG)
 <a href="https://huggingface.co/spaces/NotShrirang/LoomRAG"><img src="https://img.shields.io/badge/Streamlit%20App-red?style=flat-rounded-square&logo=streamlit&labelColor=white"/></a>
 
-This project implements a Multimodal Retrieval-Augmented Generation (RAG) system, named **LoomRAG**, that leverages OpenAI's CLIP model for neural cross-modal retrieval and semantic search. The system allows users to input text queries and retrieve both text and image responses seamlessly through vector embeddings. It features a comprehensive annotation interface for creating custom datasets and supports CLIP model fine-tuning with configurable parameters for domain-specific applications. The system also supports uploading images and PDFs for enhanced interaction and intelligent retrieval capabilities through a Streamlit-based interface.
+This project implements a Multimodal Retrieval-Augmented Generation (RAG) system, named **LoomRAG**, that leverages **OpenAI's CLIP** model for neural cross-modal image retrieval and semantic search, and **OpenAI's Whisper** model for audio processing. The system allows users to input text queries, images, or audio to retrieve multimodal responses seamlessly through vector embeddings. It features a comprehensive annotation interface for creating custom datasets and supports CLIP model fine-tuning with configurable parameters for domain-specific applications. The system also supports uploading images, PDFs, and audio files (including real-time recording) for enhanced interaction and intelligent retrieval capabilities through a Streamlit-based interface.
 
 Experience the project in action:
 
@@ -33,15 +33,27 @@ Experience the project in action:
 
 - 🔄 **Cross-Modal Retrieval**: Search text to retrieve both text and image results using deep learning
 - 🖼️ **Image-Based Search**: Search the database by uploading an image to find similar content
-- 🧠 **Embedding-Based Search**: Uses OpenAI's CLIP model to align text and image embeddings in a shared latent space
+- 🧠 **Embedding-Based Search**: Uses OpenAI's CLIP, Whisper and SentenceTransformer's Embedding Models for embedding the input data
 - 🎯 **CLIP Fine-Tuning**: Supports custom model training with configurable parameters including test dataset split size, learning rate, optimizer, and weight decay
 - 🔨 **Fine-Tuned Model Integration**: Seamlessly load and utilize fine-tuned CLIP models for enhanced search and retrieval
-- 📤 **Upload Options**: Allows users to upload images and PDFs for AI-powered processing and retrieval
+- 📤 **Upload Options**: Allows users to upload images, PDFs and audio files for AI-powered processing and retrieval
+- 🎙️ **Audio Integration**: Upload audio files or record audio directly through the interface
 - 🔗 **URL Integration**: Add images directly using URLs and scrape website data including text and images
 - 🕷️ **Web Scraping**: Automatically extract and index content from websites for comprehensive search capabilities
 - 🏷️ **Image Annotation**: Enables users to annotate uploaded images through an intuitive interface
 - 🔍 **Augmented Text Generation**: Enhances text results using LLMs for contextually rich outputs
 - 🌐 **Streamlit Interface**: Provides a user-friendly web interface for interacting with the system
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Fine-tuning CLIP for domain-specific datasets
+- [x] Image-based search and retrieval
+- [x] Adding support for audeo modalities
+- [ ] Adding support for video modalities
+- [ ] Improving the re-ranking system for better contextual relevance
+- [ ] Enhanced PDF parsing with semantic section segmentation
 
 ---
 
@@ -56,13 +68,14 @@ Experience the project in action:
 2. **Query Processing**:
 
    - Text queries / image-based queries are converted into embeddings for semantic search
-   - Uploaded images and PDFs are processed and embedded for comparison
-   - The system performs a nearest neighbor search in the vector database to retrieve relevant text and images
+   - Uploaded images, audio files and PDFs are processed and embedded for comparison
+   - The system performs a nearest neighbor search in the vector database to retrieve relevant text, images, and audio
 
 3. **Response Generation**:
 
    - For text results: Optionally refined or augmented using a language model
    - For image results: Directly returned or enhanced with image captions
+   - For audio results: Returned with relevant metadata and transcriptions where applicable
    - For PDFs: Extracts text content and provides relevant sections
 
 4. **Image Annotation**:
@@ -108,6 +121,7 @@ Experience the project in action:
    - Access the interface in your browser to:
      - Submit natural language queries
      - Upload images or PDFs to retrieve contextually relevant results
+     - Upload or record audio files
      - Add images using URLs
      - Scrape and index website content
      - Search using uploaded images
@@ -132,16 +146,6 @@ Experience the project in action:
 
 ---
 
-## 🗺️ Roadmap
-
-- [x] Fine-tuning CLIP for domain-specific datasets
-- [x] Image-based search and retrieval
-- [ ] Adding support for audio and video modalities
-- [ ] Improving the re-ranking system for better contextual relevance
-- [ ] Enhanced PDF parsing with semantic section segmentation
-
----
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any feature requests or bug fixes.
@@ -157,5 +161,6 @@ This project is licensed under the Apache-2.0 License. See the [LICENSE](LICENSE
 ## 🙏 Acknowledgments
 
 - [OpenAI CLIP](https://openai.com/research/clip)
+- [OpenAI Whisper](https://github.com/openai/whisper)
 - [FAISS](https://github.com/facebookresearch/faiss)
 - [Hugging Face](https://huggingface.co/)

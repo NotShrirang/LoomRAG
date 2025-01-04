@@ -6,6 +6,7 @@ import os
 from sentence_transformers import SentenceTransformer
 import streamlit as st
 import torch
+import whisper
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -19,6 +20,11 @@ def load_text_embedding_model():
     model = SentenceTransformer("all-MiniLM-L6-v2")
     return model
 
+@st.cache_resource
+def load_whisper_model():
+    model = whisper.load_model("small")
+    return model
+
 def load_image_index():
     index = faiss.read_index('./vectorstore/image_index.index')
     data = pd.read_csv("./vectorstore/image_data.csv")
@@ -27,6 +33,11 @@ def load_image_index():
 def load_text_index():
     index = faiss.read_index('./vectorstore/text_index.index')
     data = pd.read_csv("./vectorstore/text_data.csv")
+    return index, data
+
+def load_audio_index():
+    index = faiss.read_index('./vectorstore/audio_index.index')
+    data = pd.read_csv("./vectorstore/audio_data.csv")
     return index, data
 
 def cosine_similarity(a, b):
