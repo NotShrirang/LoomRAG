@@ -170,6 +170,7 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
+audio/
 images/
 vectorstore/
 trial.py
