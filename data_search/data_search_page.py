@@ -100,7 +100,7 @@ def data_search(clip_model, preprocess, text_embedding_model, whisper_model, dev
                     audio_indices = search_text_index(text_input, audio_index, text_embedding_model, k=3)
             if not image_index and not text_index and not audio_index:
                 st.error("No Data Found! Please add data to the database.")
-            st.subheader("Top 3 Results")
+            st.subheader("Image Results")
             cols = st.columns(3)
             for i in range(3):
                 with cols[i]:
@@ -114,15 +114,19 @@ def data_search(clip_model, preprocess, text_embedding_model, whisper_model, dev
                         cosine_similarity = torch.cosine_similarity(image_features, text_features)
                         st.write(f"Similarity: {cosine_similarity.item() * 100:.2f}%")
                         st.image(image_path)
+            st.subheader("Text Results")
             cols = st.columns(3)
             for i in range(3):
                 with cols[i]:
                     if text_index:
                         text_content = text_data['content'].iloc[text_indices[0][i]]
                         st.write(text_content)
+            st.subheader("Audio Results")
             cols = st.columns(3)
             for i in range(3):
                 with cols[i]:
                     if audio_index:
                         audio_path = audio_data['path'].iloc[audio_indices[0][i]]
+                        audio_content = audio_data['content'].iloc[audio_indices[0][i]]
                         st.audio(audio_path)
+                        st.write(f"_{audio_content}_")
