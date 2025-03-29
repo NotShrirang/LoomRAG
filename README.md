@@ -51,13 +51,13 @@ Experience the project in action:
 - [x] Fine-tuning CLIP for domain-specific datasets
 - [x] Image-based search and retrieval
 - [x] Adding support for audeo modalities
-- [ ] Adding support for video modalities
-- [ ] Improving the re-ranking system for better contextual relevance
-- [ ] Enhanced PDF parsing with semantic section segmentation
 
 ---
 
 ## 🏗️ Architecture Overview
+
+![LoomRAG Architecture](https://github.com/user-attachments/assets/dc2a2b8d-801e-42dc-8b07-089a8f8b5641)
+*Architecture Diagram*
 
 1. **Data Indexing**:
 
